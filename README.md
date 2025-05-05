@@ -1,4 +1,4 @@
-# BlockParty
+# gfBlockParty
 **Custom Minecraft minigame plugin inspired by BlockParty**  
 This is a private/internal project used exclusively by the GoFeDaKo Team.
 
