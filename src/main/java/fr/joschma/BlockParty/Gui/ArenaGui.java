@@ -41,9 +41,6 @@ public class ArenaGui {
             inv.setItem(i, this.createIT(XMaterial.BLACK_STAINED_GLASS_PANE.parseMaterial(), " ", ""));
         }
 
-        inv.setItem(16, this.createIT(XMaterial.DISPENSER.parseMaterial(),
-                "Song Provider", ChatColor.GRAY + "The plugin that's provide the song is " + ChatColor.GOLD + a.getSongProvider().toString()));
-
         for (int i = 8; i < 36; i += 8) {
             this.inv.setItem(i, this.createIT(XMaterial.BLACK_STAINED_GLASS_PANE.parseMaterial(), " ", ""));
             ++i;
@@ -73,8 +70,8 @@ public class ArenaGui {
             this.inv.setItem(j, its[j - 19]);
         }
 
-        inv.setItem(34, this.createIT(XMaterial.MUSIC_DISC_MALL.parseMaterial(),
-                "Song Setting", ChatColor.GRAY + "The song setting is set to " + ChatColor.GOLD + a.getSongSetting().toString()));
+        this.inv.setItem(34, this.createIT(XMaterial.BLACK_STAINED_GLASS_PANE.parseMaterial(), " ", ""));
+        this.inv.setItem(16, this.createIT(XMaterial.BLACK_STAINED_GLASS_PANE.parseMaterial(), " ", ""));
 
         inv.setItem(32, createIT(XMaterial.DARK_OAK_SIGN.parseMaterial(), ChatColor.RED + "Remove" +
                 ChatColor.WHITE + ChatColor.ITALIC + " Sign", isSet(a.getSigns().size()), ChatColor.GRAY + "You have link "

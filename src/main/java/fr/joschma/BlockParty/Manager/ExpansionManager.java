@@ -107,20 +107,15 @@ public class ExpansionManager extends PlaceholderExpansion {
             }
         }
 
-        if (a == null) {
+        if (a != null) {
             if (params.contains("bpm_arena_state")) {
-                switch (a.getState()) {
-                    case CLEARED:
-                        return Language.MSG.state_cleared.msg();
-                    case WATTING:
-                        return Language.MSG.state_waiting.msg();
-                    case INGAME:
-                        return Language.MSG.state_in_game.msg();
-                    case CLEARING:
-                        return Language.MSG.state_clearing.msg();
-                    case PAUSED:
-                        return Language.MSG.state_paused.msg();
-                }
+                return switch (a.getState()) {
+                    case CLEARED -> Language.MSG.state_cleared.msg();
+                    case WATTING -> Language.MSG.state_waiting.msg();
+                    case INGAME -> Language.MSG.state_in_game.msg();
+                    case CLEARING -> Language.MSG.state_clearing.msg();
+                    case PAUSED -> Language.MSG.state_paused.msg();
+                };
             }
         }
         return arenaPlaceHolder(params, a);

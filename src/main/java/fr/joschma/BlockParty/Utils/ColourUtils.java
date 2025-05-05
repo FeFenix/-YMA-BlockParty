@@ -21,38 +21,24 @@ public class ColourUtils {
     }
 
     public boolean isAColour(String colour, Arena a) {
-        List<String> colours = new ArrayList<>();
-        colours.addAll(a.getPl().getColourName());
-        if (colours.contains(colour.toLowerCase()))
-            return true;
-
-        return false;
+        List<String> colours = new ArrayList<>(a.getPl().getColourName());
+        return colours.contains(colour.toLowerCase());
     }
 
     public Color getBlockColour(Arena a, Material ma) {
         String colour = a.getPl().getColourUtils().getBlockColourName(ma).toLowerCase();
-        if (colour.equals("red")) {
-            return Color.RED;
-        } else if (colour.equals("gold")) {
-            return Color.fromRGB(255, 215, 0);
-        } else if (colour.equals("yellow")) {
-            return Color.YELLOW;
-        } else if (colour.equals("green")) {
-            return Color.GREEN;
-        } else if (colour.equals("aqua")) {
-            return Color.AQUA;
-        } else if (colour.equals("blue")) {
-            return Color.BLUE;
-        } else if (colour.equals("purple")) {
-            return Color.PURPLE;
-        } else if (colour.equals("white")) {
-            return Color.WHITE;
-        } else if (colour.equals("gray")) {
-            return Color.GRAY;
-        } else if (colour.equals("black")) {
-            return Color.BLACK;
-        } else {
-            return a.getDefaultParticleColour();
-        }
+        return switch (colour) {
+            case "red" -> Color.RED;
+            case "gold" -> Color.fromRGB(255, 215, 0);
+            case "yellow" -> Color.YELLOW;
+            case "green" -> Color.GREEN;
+            case "aqua" -> Color.AQUA;
+            case "blue" -> Color.BLUE;
+            case "purple" -> Color.PURPLE;
+            case "white" -> Color.WHITE;
+            case "gray" -> Color.GRAY;
+            case "black" -> Color.BLACK;
+            default -> a.getDefaultParticleColour();
+        };
     }
 }

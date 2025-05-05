@@ -24,18 +24,15 @@ public class FileManager {
     }*/
 
     public static YamlConfiguration load(final File file) {
-        final YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-        return fc;
+        return YamlConfiguration.loadConfiguration(file);
     }
 
     public static File load(final String name) {
-        final File file = new File(FileManager.pl.getDataFolder(), name + ".yml");
-        return file;
+        return new File(FileManager.pl.getDataFolder(), name + ".yml");
     }
 
     public static File loadArenaFile(final String name) {
-        final File file = new File(FileManager.pl.getDataFolder() + File.separator + "Arenas", name + ".yml");
-        return file;
+        return new File(FileManager.pl.getDataFolder() + File.separator + "Arenas", name + ".yml");
     }
 
     public static void save(final File file, final YamlConfiguration fc) {

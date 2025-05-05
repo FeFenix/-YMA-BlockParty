@@ -15,7 +15,7 @@ public class LeaderboardManager {
     }
 
     public int getNumber(int place, Map<String, Integer> map) {
-        if (map.keySet().size() <= place) {
+        if (map.size() <= place) {
             return -1;
         }
         map = sortByValue(map);
@@ -23,7 +23,7 @@ public class LeaderboardManager {
     }
 
     public String getName(int place, Map<String, Integer> map) {
-        if (map.keySet().size() <= place) {
+        if (map.size() <= place) {
             return "No value at place: " + String.valueOf(place);
         }
 

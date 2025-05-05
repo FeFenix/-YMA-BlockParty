@@ -2,7 +2,6 @@ package fr.joschma.BlockParty.Gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import fr.joschma.BlockParty.Arena.Arena;
-import fr.joschma.BlockParty.Arena.State.SongProvider;
 import fr.joschma.BlockParty.BPM;
 import fr.joschma.BlockParty.Messages.Language;
 import org.bukkit.Bukkit;
@@ -13,9 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,90 +51,33 @@ public class ChoseSongGUI {
         inv.setItem(0, this.createIT(XMaterial.MUSIC_DISC_13.parseMaterial(), "RANDOM", ""));
 
         int y = 689;
-        if (a.getSongProvider() == SongProvider.NoteBlock) {
-            if (a.getPathToMusic().size() < 45) {
-                for (int i = 1; i <= a.getPathToMusic().size(); i++) {
-                    if (y == 701)
-                        y = 689;
+        if (a.getOpenAudioMusic().size() < 53) {
+            int i = 1;
 
-                    if (XMaterial.values()[y].parseMaterial() != null) {
-                        String musicName = getMusicFromPath(a, i - 1);
-                        int timesVoted = 0;
+            for (String musicName : a.getOpenAudioMusic().keySet()) {
+                if (y == 701)
+                    y = 689;
 
-                        if (a.getSongManager().getNumberOfVoteMap().get(musicName) != null) {
-                            timesVoted = a.getSongManager().getNumberOfVoteMap().get(musicName);
-                        }
+                if (XMaterial.values()[y].parseMaterial() != null) {
+                    int timesVoted = 0;
 
-                        inv.setItem(i, createIT(XMaterial.values()[y].parseMaterial(), musicName, ChatColor.GOLD + "Votes: " + ChatColor.GRAY + String.valueOf(timesVoted)));
-                    } else {
-                        i--;
+                    Integer integer = a.getSongManager().getNumberOfVoteMap().get(musicName);
+                    if (integer != null) {
+                        timesVoted = integer;
                     }
 
-                    y++;
-                }
-            } else {
-                for (Player p : a.getPlayers()) {
-                    a.getPl().getDebug().error(p, "To many musics ! Stopping");
+                    inv.setItem(i, createIT(XMaterial.values()[y].parseMaterial(), musicName, ChatColor.GRAY + String.valueOf(timesVoted)));
                 }
 
-                a.urgentLeaveGame();
+                i++;
+                y++;
             }
-        } else if (a.getSongProvider() == SongProvider.MCJukebox) {
-            if (a.getLinkToMusic().size() < 53) {
-                int i = 1;
-
-                for (String musicName : a.getLinkToMusic().keySet()) {
-                    if (y == 701)
-                        y = 689;
-
-                    if (XMaterial.values()[y].parseMaterial() != null) {
-                        int timesVoted = 0;
-
-                        if (a.getSongManager().getNumberOfVoteMap().get(musicName) != null) {
-                            timesVoted = a.getSongManager().getNumberOfVoteMap().get(musicName);
-                        }
-
-                        inv.setItem(i, createIT(XMaterial.values()[y].parseMaterial(), musicName, ChatColor.GRAY + String.valueOf(timesVoted)));
-                    }
-
-                    i++;
-                    y++;
-                }
-            } else {
-                for (Player p : a.getPlayers()) {
-                    a.getPl().getDebug().error(p, "To many musics ! Stopping");
-                }
-
-                a.urgentLeaveGame();
+        } else {
+            for (Player p : a.getPlayers()) {
+                a.getPl().getDebug().error(p, "To many musics ! Stopping");
             }
-        } else if (a.getSongProvider() == SongProvider.OpenAudioMC) {
-            if (a.getOpenAudioMusic().size() < 53) {
-                int i = 1;
 
-                for (String musicName : a.getOpenAudioMusic().keySet()) {
-                    if (y == 701)
-                        y = 689;
-
-                    if (XMaterial.values()[y].parseMaterial() != null) {
-                        int timesVoted = 0;
-
-                        if (a.getSongManager().getNumberOfVoteMap().get(musicName) != null) {
-                            timesVoted = a.getSongManager().getNumberOfVoteMap().get(musicName);
-                        }
-
-                        inv.setItem(i, createIT(XMaterial.values()[y].parseMaterial(), musicName, ChatColor.GRAY + String.valueOf(timesVoted)));
-                    }
-
-                    i++;
-                    y++;
-                }
-            } else {
-                for (Player p : a.getPlayers()) {
-                    a.getPl().getDebug().error(p, "To many musics ! Stopping");
-                }
-
-                a.urgentLeaveGame();
-            }
+            a.urgentLeaveGame();
         }
     }
 

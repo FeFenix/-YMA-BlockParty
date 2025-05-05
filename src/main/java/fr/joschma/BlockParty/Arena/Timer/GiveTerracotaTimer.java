@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static fr.joschma.BlockParty.Utils.RepeatUtils.rfcdMsg;
 
@@ -37,50 +38,46 @@ public class GiveTerracotaTimer {
         if (a.getRound() == 1)
             time = a.getWaitTimeBeforeGiveColorFirstRound();
         final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        this.taskID = scheduler.scheduleSyncRepeatingTask((Plugin) a.getPl(), (Runnable) new Runnable() {
-            @Override
-            public void run() {
-                if (GiveTerracotaTimer.this.time == 0) {
-                    a.getDanceFloorColourGroupActualMaterials().clear();
-                    if (a.isUseSameColourGroup()) {
-                        for (Material material : useSameColourGroup(a, a.getDanceFloorActualMaterial())) {
-                            if (material != a.getDanceFloorActualMaterial()) {
-                                a.getDanceFloorColourGroupActualMaterials().add(material);
-                            }
+        this.taskID = scheduler.scheduleSyncRepeatingTask(a.getPl(), () -> {
+            if (GiveTerracotaTimer.this.time == 0) {
+                a.getDanceFloorColourGroupActualMaterials().clear();
+                if (a.isUseSameColourGroup()) {
+                    for (Material material : useSameColourGroup(a, a.getDanceFloorActualMaterial())) {
+                        if (material != a.getDanceFloorActualMaterial()) {
+                            a.getDanceFloorColourGroupActualMaterials().add(material);
                         }
                     }
-                    a.getRemoveFloorCountDown().startCountDown(a);
-
-                    if (a.isGiveBlock()) {
-                        giveBlock(a);
-                    } else {
-                        for (final Player p : a.getPlayersAlive()) {
-                            a.getPl().getDebug().msg(p, "The color is " + a.getDanceFloorActualMaterial());
-                        }
-                    }
-
-                    GiveTerracotaTimer.this.stopTimer();
-                } else if (GiveTerracotaTimer.this.time > 0) {
-                    if (GiveTerracotaTimer.this.i >= 4) {
-                        GiveTerracotaTimer.this.i = 1;
-                    }
-                    for (final Player p : a.getPlayersAlive()) {
-                        ActionBar.sendActionBar(p, ChatColor.GRAY + Language.MSG.Waiting.msg(p) + RepeatUtils.repeat(GiveTerracotaTimer.this.i, "."));
-                    }
-
-                    ++i;
-                    --time;
                 }
+                a.getRemoveFloorCountDown().startCountDown(a);
+
+                if (a.isGiveBlock()) {
+                    giveBlock(a);
+                } else {
+                    for (final Player p : a.getPlayersAlive()) {
+                        a.getPl().getDebug().msg(p, "The color is " + a.getDanceFloorActualMaterial());
+                    }
+                }
+
+                GiveTerracotaTimer.this.stopTimer();
+            } else if (GiveTerracotaTimer.this.time > 0) {
+                if (GiveTerracotaTimer.this.i >= 4) {
+                    GiveTerracotaTimer.this.i = 1;
+                }
+                for (final Player p : a.getPlayersAlive()) {
+                    ActionBar.sendActionBar(p, ChatColor.GRAY + Language.MSG.Waiting.msg(p) + RepeatUtils.repeat(GiveTerracotaTimer.this.i, "."));
+                }
+
+                ++i;
+                --time;
             }
         }, 0L, 20L);
     }
 
-    //.replace("\u2b1b", " ")
+    //.replace("⬛", " ")
     private void giveBlock(Arena a) {
         ItemStack block = new ItemStack(a.getDanceFloorActualMaterial());
         ItemMeta meta = block.getItemMeta();
-        List<Integer> bestPlace = new ArrayList<>();
-        bestPlace.addAll(Arrays.asList(5, 6));
+//        List<Integer> bestPlace = new ArrayList<>(Arrays.asList(5, 6));
 
         for (final Player p : a.getPlayersAlive()) {
             Material ma = a.getDanceFloorActualMaterial();
@@ -99,7 +96,7 @@ public class GiveTerracotaTimer {
                 name = a.getPl().getColourUtils().getBlockColourName(ma);
             }
 
-            meta.setDisplayName(rfcdMsg(p, a, (int) Math.floor(time), name) + ChatColor.BOLD + a.getSuffix_colour());
+            Objects.requireNonNull(meta).setDisplayName(rfcdMsg(p, a, (int) (double) time, name) + ChatColor.BOLD + a.getSuffix_colour());
             block.setItemMeta(meta);
             p.getInventory().setItem(4, block);
         }

@@ -1,0 +1,6 @@
+Copyright © 2025 GoFeDaKo Team. All rights reserved.
+
+This software is the proprietary property of GoFeDaKo Team. No part of this codebase may be reproduced, distributed, or transmitted in any form or by any means, including copying, modifying, publishing, or selling, without the prior written permission of the owner.
+This license does not apply to the original plugin and its previous versions.
+
+Unauthorized use is strictly prohibited.

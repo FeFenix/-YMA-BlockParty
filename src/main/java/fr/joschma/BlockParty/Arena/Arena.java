@@ -5,8 +5,6 @@ import com.alessiodp.parties.api.Parties;
 import com.alessiodp.parties.api.interfaces.PartiesAPI;
 import com.alessiodp.parties.api.interfaces.Party;
 import com.alessiodp.parties.api.interfaces.PartyPlayer;
-import com.craftmend.openaudiomc.api.ClientApi;
-import com.craftmend.openaudiomc.api.MediaApi;
 import com.cryptomorin.xseries.XMaterial;
 import com.xxmicloxx.NoteBlockAPI.model.Song;
 import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
@@ -14,7 +12,6 @@ import fr.joschma.BlockParty.Arena.End.End;
 import fr.joschma.BlockParty.Arena.JoinArena.JoinArena;
 import fr.joschma.BlockParty.Arena.State.ArenaState;
 import fr.joschma.BlockParty.Arena.State.ParticleColourSetting;
-import fr.joschma.BlockParty.Arena.State.SongProvider;
 import fr.joschma.BlockParty.Arena.State.SongSetting;
 import fr.joschma.BlockParty.Arena.Timer.*;
 import fr.joschma.BlockParty.BPM;
@@ -24,11 +21,13 @@ import fr.joschma.BlockParty.Cuboid.WorkloadRunnable;
 import fr.joschma.BlockParty.Manager.FileManager;
 import fr.joschma.BlockParty.Manager.SongManager;
 import fr.joschma.BlockParty.Messages.Language;
+import gtdr.niobium.kostul.SoundNB;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.mcjukebox.plugin.bukkit.api.models.Media;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -44,7 +43,6 @@ import java.util.*;
 public class Arena {
 
     BPM pl;
-    SongProvider songProvider;
     SongManager songManager;
     String name;
     String powerUpName;
@@ -172,7 +170,7 @@ public class Arena {
                  final List<String> pathToMusic, final Map<String, String> linkToMusic, final String linkToStopMusic, final List<Sign> signs,
                  final String pathToStopMusic, final Location lobbySpawn, final Location exitSpawn, final Cuboid danceFloorCuboid,
                  final Cuboid arenaCuboid, final List<String> allowedCommands, final List<String> commandsOnGameEnd, boolean playerColision,
-                 boolean changeTime, GameMode gmOnDeath, boolean saveInventory, SongProvider songProvider, boolean giveSlimeBall,
+                 boolean changeTime, GameMode gmOnDeath, boolean saveInventory, boolean giveSlimeBall,
                  boolean clearInventory, boolean giveDye,boolean resetExp, boolean giveBlock, boolean allowPVP, boolean autoRestart,
                  boolean enableLightnings, boolean enablePowerUps, boolean enableFireworksOnWin, boolean allowJoinDuringGame,
                  boolean enableScoreboard, List<String> customDanceFloor, boolean randomizeCustomFloor,
@@ -268,7 +266,6 @@ public class Arena {
         this.changeTime = changeTime;
         this.gmOnDeath = gmOnDeath;
         this.saveInventory = saveInventory;
-        this.songProvider = songProvider;
         this.giveSlimeBall = giveSlimeBall;
         this.giveDye = giveDye;
         this.resetExp = resetExp;
@@ -356,11 +353,11 @@ public class Arena {
                             }
                         }
 
-                        sign.setLine(y, msg(str));
+                        sign.getSide(Side.FRONT).setLine(y, msg(str));
                     }
 
-                    if (players.size() > 0)
-                        sign.setLine(y, msg(players.get(0), str));
+                    if (!players.isEmpty())
+                        sign.getSide(Side.FRONT).setLine(y, msg(players.get(0), str));
                     y++;
                 }
 
@@ -368,12 +365,13 @@ public class Arena {
             }
         } else {
             for (final Sign sign : signs) {
-                sign.setLine(2, ChatColor.RED + "In game !");
+                sign.getSide(Side.FRONT).setLine(2, ChatColor.RED + "In game !");
                 sign.update();
             }
         }
     }
 
+    @SuppressWarnings("StringEquality")
     public void clear() {
         File leaderboard = FileManager.load("Leaderboard");
         YamlConfiguration fc = FileManager.load(leaderboard);
@@ -396,7 +394,7 @@ public class Arena {
                 pl.getInvManager().loadInventory(p);
 
             p.teleport(exitSpawn);
-            if (playerVote.keySet().contains(p)) {
+            if (playerVote.containsKey(p)) {
                 String lastVotedSong = playerVote.get(p);
                 numberOfVote.put(lastVotedSong, numberOfVote.get(lastVotedSong) - 1);
                 playerVote.remove(p);
@@ -413,8 +411,7 @@ public class Arena {
 
         pl.getMusicManager().stopMusic(this);
 
-        final List<Player> losers = new ArrayList<Player>();
-        losers.addAll(players);
+        final List<Player> losers = new ArrayList<>(players);
         losers.removeAll(winners);
 
         for (Player p : players) {
@@ -423,11 +420,12 @@ public class Arena {
                     str = PlaceholderAPI.setPlaceholders(p, str);
                 }
 
+                String empty = "";
                 if (str.contains("%winners%")) {
                     if (winners.contains(p)) {
                         str = str.replace("%winners%", p.getName());
                     } else {
-                        str = "";
+                        str = empty;
                     }
                 }
 
@@ -435,10 +433,11 @@ public class Arena {
                     if (losers.contains(p)) {
                         str = str.replace("%losers%", p.getName());
                     } else {
-                        str = "";
+                        str = empty;
                     }
                 }
 
+                if (str == empty) continue;
                 Bukkit.dispatchCommand((CommandSender) Bukkit.getServer().getConsoleSender(), str);
             }
         }
@@ -470,7 +469,7 @@ public class Arena {
         this.updateSign();
 
         if (isAutoRestart()) {
-            if (arenaCuboid.getPoint1().getWorld().getUID() != exitSpawn.getWorld().getUID()) {
+            if (Objects.requireNonNull(arenaCuboid.getPoint1().getWorld()).getUID() != Objects.requireNonNull(exitSpawn.getWorld()).getUID()) {
                 Bukkit.getScheduler().runTaskLater(pl, new Runnable() {
                     @Override
                     public void run() {
@@ -504,7 +503,7 @@ public class Arena {
 
     public void clearPowerUps() {
         if (powerUpLoc != null) {
-            for (final Entity en : powerUpLoc.getWorld().getNearbyEntities(powerUpLoc, rangeToCatchPowerup,
+            for (final Entity en : Objects.requireNonNull(powerUpLoc.getWorld()).getNearbyEntities(powerUpLoc, rangeToCatchPowerup,
                     rangeToCatchPowerup, rangeToCatchPowerup)) {
                 if (en.getType() == EntityType.ARMOR_STAND) {
                     en.remove();
@@ -543,7 +542,7 @@ public class Arena {
             }
         }
         if (powerUpLoc != null) {
-            for (final Entity en : powerUpLoc.getWorld().getNearbyEntities(powerUpLoc, 0.1, 0.1, 0.1)) {
+            for (final Entity en : Objects.requireNonNull(powerUpLoc.getWorld()).getNearbyEntities(powerUpLoc, 0.1, 0.1, 0.1)) {
                 if (en.getType() == EntityType.ARMOR_STAND) {
                     en.remove();
                 }
@@ -566,7 +565,7 @@ public class Arena {
         }
         players.remove(p);
 
-        if (playerVote.keySet().contains(p)) {
+        if (playerVote.containsKey(p)) {
             String lastVotedSong = playerVote.get(p);
             numberOfVote.put(lastVotedSong, numberOfVote.get(lastVotedSong) - 1);
             playerVote.remove(p);
@@ -586,20 +585,8 @@ public class Arena {
 
         p.setGameMode(gameModeOnLeave);
 
-        if (songProvider == SongProvider.NoteBlock) {
-            if (radioSongPlayer != null) {
-                radioSongPlayer.removePlayer(p);
-            }
-        }
-
-        if (songProvider == SongProvider.MCJukebox)
-            pl.getMusicManager().stopMcJukeboxMusic(p);
-
-
-        if (songProvider == SongProvider.OpenAudioMC) {
-            MediaApi.getInstance().stopFor("BlockParty", ClientApi.getInstance().getClient(p.getUniqueId()));
-            MediaApi.getInstance().stopFor("BlockPartyStop", ClientApi.getInstance().getClient(p.getUniqueId()));
-        }
+        SoundNB.stopPlaying(p, "BlockParty");
+        SoundNB.stopPlaying(p, "BlockPartyStop");
 
         if (clearInventory)
             p.getInventory().clear();
@@ -616,9 +603,7 @@ public class Arena {
         if (isEnableScoreboard())
             pl.getScoreBoardUtils().rmvScoreBoard(p);
         p.teleport(this.exitSpawn);
-        if (winners.contains(p)) {
-            winners.remove(p);
-        }
+        winners.remove(p);
         updateSign();
     }
 
@@ -626,11 +611,11 @@ public class Arena {
         if (this.pl.isPartiesIsEnable()) {
             final PartiesAPI api = Parties.getApi();
             final PartyPlayer player = api.getPartyPlayer(p.getUniqueId());
-            if (!player.isInParty()) {
+            if (!Objects.requireNonNull(player).isInParty()) {
                 JoinArena.joinArena(p, this);
                 return true;
             }
-            final Party party = api.getParty(player.getPartyId());
+            final Party party = api.getParty(Objects.requireNonNull(player.getPartyId()));
             if (party != null) {
                 if (party.getMembers().size() + players.size() <= maxPlayer) {
                     for (final UUID uuid : party.getMembers()) {
@@ -648,7 +633,7 @@ public class Arena {
         if (this.playersAlive.size() == 1 && !soloGame) {
             End.playerWin(this, playersAlive.get(0));
             return true;
-        } else if (maxNumberOfRound == round || this.playersAlive.size() == 0) {
+        } else if (maxNumberOfRound == round || this.playersAlive.isEmpty()) {
             End.noMoreRoundWin(this);
             return true;
         }
@@ -663,26 +648,26 @@ public class Arena {
 
     public void giveStuff(final Player p) {
         if (giveSlimeBall) {
-            final ItemStack quit = new ItemStack(XMaterial.SLIME_BALL.parseMaterial());
+            final ItemStack quit = new ItemStack(Objects.requireNonNull(XMaterial.SLIME_BALL.get()));
             final ItemMeta quitM = quit.getItemMeta();
-            quitM.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + Language.MSG.LeaveSlimeBall.msg());
+            Objects.requireNonNull(quitM).setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + Language.MSG.LeaveSlimeBall.msg());
             quit.setItemMeta(quitM);
             p.getInventory().setItem(8, quit);
         }
 
         if (giveDye) {
             final ItemMeta pinkDyeMeta = pinkDye.getItemMeta();
-            pinkDyeMeta.setDisplayName(ChatColor.GRAY + Language.MSG.PlayerHiderText.msg() + " \u27AF " + ChatColor.RED + Language.MSG.PlayerHiderVisible.msg());
+            Objects.requireNonNull(pinkDyeMeta).setDisplayName(ChatColor.GRAY + Language.MSG.PlayerHiderText.msg() + " ➯ " + ChatColor.RED + Language.MSG.PlayerHiderVisible.msg());
             pinkDye.setItemMeta(pinkDyeMeta);
 
             final ItemMeta limeDyeMeta = limeDye.getItemMeta();
-            limeDyeMeta.setDisplayName(ChatColor.GRAY + Language.MSG.PlayerHiderText.msg() + " \u27AF " + ChatColor.GREEN + Language.MSG.PlayerHiderHidden.msg());
+            Objects.requireNonNull(limeDyeMeta).setDisplayName(ChatColor.GRAY + Language.MSG.PlayerHiderText.msg() + " ➯ " + ChatColor.GREEN + Language.MSG.PlayerHiderHidden.msg());
             limeDye.setItemMeta(limeDyeMeta);
             p.getInventory().setItem(7, limeDye);
         }
 
         if (songSetting == SongSetting.CHOOSE)
-            p.getInventory().setItem(0, pl.getArenaGui().createIT(XMaterial.PAPER.parseMaterial(), ChatColor.GRAY + Language.MSG.SongSelector.msg()));
+            p.getInventory().setItem(0, pl.getArenaGui().createIT(XMaterial.PAPER.get(), ChatColor.GRAY + Language.MSG.SongSelector.msg()));
     }
 
     public boolean iscolourGroup() {
@@ -699,14 +684,6 @@ public class Arena {
 
     public boolean isGiveSlimeBall() {
         return giveSlimeBall;
-    }
-
-    public SongProvider getSongProvider() {
-        return songProvider;
-    }
-
-    public void setSongProvider(SongProvider songProvider) {
-        this.songProvider = songProvider;
     }
 
     public SongManager getSongManager() {

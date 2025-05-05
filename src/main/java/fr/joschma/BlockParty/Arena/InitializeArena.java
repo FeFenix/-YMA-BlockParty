@@ -7,7 +7,6 @@ package fr.joschma.BlockParty.Arena;
 import com.cryptomorin.xseries.XMaterial;
 import fr.joschma.BlockParty.Arena.State.ArenaState;
 import fr.joschma.BlockParty.Arena.State.ParticleColourSetting;
-import fr.joschma.BlockParty.Arena.State.SongProvider;
 import fr.joschma.BlockParty.Arena.State.SongSetting;
 import fr.joschma.BlockParty.BPM;
 import fr.joschma.BlockParty.Cuboid.Cuboid;
@@ -43,7 +42,6 @@ public class InitializeArena {
                 Bukkit.broadcastMessage(pl.getUtilsPrefix().getPrefix() + "Song Setting not detected setting to CHOOSE");
             }
 
-            final SongProvider songProvider = SongProvider.valueOf(fc.getString("Settings.SongProvider"));
             final boolean finished = fc.getBoolean("Settings.Finished");
             final boolean saveInventory = fc.getBoolean("Settings.SaveInventory");
             final boolean changeTime = fc.getBoolean("Settings.ChangeTime");
@@ -197,7 +195,7 @@ public class InitializeArena {
                     timeToRemoveFromRemoveFloorTime, removeFloorTime, baseRemoveFloorTime, 0, durationPowerUp, levelOfPowerUp,
                     rangeToCatchPowerup, YLevelToDie, maxNumberOfRound, powerUpHead, danceFloorFloorMaterials, roundToSpawnPowerUp,
                     roundToReduceTime, pathToMusic, linkToMusic, linkToStopMusic, signs, pathToStopMusic, lobbySpawn, exitSpawn, danceFloorCuboid,
-                    arenaFloorCuboid, allowedCommands, commandsOnEnd, collision, changeTime, gmOnDeath, saveInventory, songProvider, giveSlimeBall,
+                    arenaFloorCuboid, allowedCommands, commandsOnEnd, collision, changeTime, gmOnDeath, saveInventory, giveSlimeBall,
                     clearInv, giveDye, resetExp, giveBlock, allowPVP, autoRestart, enableLightnings, enablePowerUps, enableFireworksOnWin,
                     allowJoinDuringGame, enableScoreboard, customDanceFloorName, randomizeCustomFloor, onlyCustomFloors, useColourPalette, false,
                     openAudioMusic, openAudioStopMusic, isNoTitleBar, showColorNameInBarTitle, smartRandomJoin, scoreBoard,
@@ -233,7 +231,6 @@ public class InitializeArena {
         fc.set("Settings.GiveSlimeBall", a.isGiveSlimeBall());
         fc.set("Settings.HandleExp", a.isResetExp());
         fc.set("Settings.GiveDye", a.isGiveDye());
-        fc.set("Settings.SongProvider", a.getSongProvider().toString());
         fc.set("Settings.GiveBlock", a.isGiveBlock());
         fc.set("Settings.AllowPVP", a.isAllowPVP());
         fc.set("Settings.AutoRestart", a.isAutoRestart());

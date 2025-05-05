@@ -7,7 +7,6 @@ package fr.joschma.BlockParty.Arena;
 import com.cryptomorin.xseries.XMaterial;
 import fr.joschma.BlockParty.Arena.State.ArenaState;
 import fr.joschma.BlockParty.Arena.State.ParticleColourSetting;
-import fr.joschma.BlockParty.Arena.State.SongProvider;
 import fr.joschma.BlockParty.Arena.State.SongSetting;
 import fr.joschma.BlockParty.BPM;
 import fr.joschma.BlockParty.Manager.FileManager;
@@ -59,9 +58,9 @@ public class CreateArena {
         final Map<String, String> linkToMusic = new HashMap<String, String>();
         linkToMusic.put("InsertTitle1", "https://audio.jukehost.co.uk/sEJewZ4CFF7xRJoP7xjzw3IusePkIYLc.mp3");
         linkToMusic.put("InsertTitle2", "https://audio.jukehost.co.uk/v80VCCs7mGCHyrNiFg92BwuOvQGTOU9R.mp3");
-        final Map<String, String> OpenAudioMusic = new HashMap<String, String>();
-        OpenAudioMusic.put("InsertTitle1", "https://soundcloud.com/boyzteeth/ch3rryb0mb-p0pular-bootleg");
-        OpenAudioMusic.put("LinkToMusic2", "https://soundcloud.com/djbarnhem/songz-1");
+        final Map<String, String> openAudioMusic = new HashMap<String, String>();
+        openAudioMusic.put("InsertTitle1", "https://soundcloud.com/boyzteeth/ch3rryb0mb-p0pular-bootleg");
+        openAudioMusic.put("LinkToMusic2", "https://soundcloud.com/djbarnhem/songz-1");
         final List<String> allowedCommands = new ArrayList<String>();
         allowedCommands.add("/hub");
         allowedCommands.add("/lobby");
@@ -103,10 +102,10 @@ public class CreateArena {
                 XMaterial.BEACON.parseMaterial(), dfMaterials, roundToSpawnPowerUp, roundToReduceTime, pathToMusic, linkToMusic,
                 "https://audio.jukehost.co.uk/fi3C1HLoGCw3hxeixkIJz6YOjEWObRAB.mp3", new ArrayList<Sign>(),
                 "Songs/nothing.nbs", null, null, null, null, allowedCommands,
-                commandsOnEnd, false, true, GameMode.SPECTATOR, true, SongProvider.NoteBlock, true,
+                commandsOnEnd, false, true, GameMode.SPECTATOR, true, true,
                 true, true, true, true, false, true, true, true,
                 true, false, true, new ArrayList<String>(), true,
-                false,false, true, OpenAudioMusic,
+                false,false, true, openAudioMusic,
                 "https://www.youtube.com/watch?v=XQktVJiBhos", false,true, true,
                 scoreBoard, powerUps, 2.5, signDisplay, potionEffects, "none",
                 "none", false, GameMode.SURVIVAL,false, true, 10,

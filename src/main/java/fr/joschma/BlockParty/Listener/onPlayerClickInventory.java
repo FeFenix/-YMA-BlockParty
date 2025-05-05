@@ -7,12 +7,10 @@ package fr.joschma.BlockParty.Listener;
 import com.cryptomorin.xseries.XMaterial;
 import fr.joschma.BlockParty.Arena.Arena;
 import fr.joschma.BlockParty.Arena.JoinArena.JoinArena;
-import fr.joschma.BlockParty.Arena.State.SongProvider;
 import fr.joschma.BlockParty.BPM;
 import fr.joschma.BlockParty.Gui.AreYouSureGUI;
 import fr.joschma.BlockParty.Manager.ArenaManager;
 import fr.joschma.BlockParty.Messages.Language;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -57,17 +55,11 @@ public class onPlayerClickInventory implements Listener {
 
                                 if (name.equals("RANDOM")) {
                                     Random rand = new Random();
-                                    if (ar.getSongProvider() == SongProvider.MCJukebox) {
-                                        name = String.valueOf(ar.getLinkToMusic().keySet().toArray()[rand.nextInt(ar.getLinkToMusic().size())]);
-                                    } else if (ar.getSongProvider() == SongProvider.NoteBlock) {
-                                        name = pl.getChoseSongGUI().getMusicFromPath(ar, rand.nextInt(ar.getPathToMusic().size()));
-                                    } else if (ar.getSongProvider() == SongProvider.OpenAudioMC) {
-                                        name = String.valueOf(ar.getOpenAudioMusic().keySet().toArray()[rand.nextInt(ar.getOpenAudioMusic().size())]);
-                                    }
+                                    name = String.valueOf(ar.getOpenAudioMusic().keySet().toArray()[rand.nextInt(ar.getOpenAudioMusic().size())]);
                                 }
 
                                 // player has voted rmv last vote
-                                if (playerVote.keySet().contains(p)) {
+                                if (playerVote.containsKey(p)) {
                                     String lastVotedSong = playerVote.get(p);
                                     numberOfVote.put(lastVotedSong, numberOfVote.get(lastVotedSong) - 1);
                                 }

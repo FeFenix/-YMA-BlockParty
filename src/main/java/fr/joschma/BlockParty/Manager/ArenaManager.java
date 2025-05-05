@@ -13,14 +13,14 @@ import java.util.List;
 
 public class ArenaManager
 {
-    List<Arena> arenas = new ArrayList<>();
-    List<String> arenaNames = new ArrayList<>();
+    List<Arena> arenas;
+    List<String> arenaNames;
     List<HubArena> hubArenas = new ArrayList<>();
     List<String> hubArenaNames = new ArrayList<>();
     
     public ArenaManager() {
-        this.arenas = new ArrayList<Arena>();
-        this.arenaNames = new ArrayList<String>();
+        this.arenas = new ArrayList<>();
+        this.arenaNames = new ArrayList<>();
     }
     
     public void addArenaListNFile(final Arena a) {
@@ -69,9 +69,7 @@ public class ArenaManager
     }
     
     public void rmvArenaNames(final String name) {
-        if (this.arenaNames.contains(name)) {
-            this.arenaNames.remove(name);
-        }
+        this.arenaNames.remove(name);
     }
     
     public List<String> getArenaNames() {

@@ -16,12 +16,10 @@ import fr.joschma.BlockParty.Manager.CreationZoneManager;
 import fr.joschma.BlockParty.Manager.FileManager;
 import fr.joschma.BlockParty.Messages.Language;
 import fr.joschma.BlockParty.Utils.UtilsLoc;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,7 +33,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Objects;
 
 public class onPlayerInteract implements Listener {
 
@@ -53,30 +51,27 @@ public class onPlayerInteract implements Listener {
         Arena a = this.am.getArenaPlayer(p);
 
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Sign) {
-                final Sign sign = (Sign) e.getClickedBlock().getState();
+            if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Sign sign) {
 
-                if (sign != null) {
-                    if(pl.isHubServer() && pl.getConfig().getBoolean("useBungeeCord")) {
-                        String arenaName = sign.getLine(2);
-                        HubArena hubArena = pl.getAm().getHubArena(arenaName);
-                        if (hubArena.getMaxPlayer() > hubArena.getCurrentPlayer()) {
-                            hubArena.setCurrentPlayer(hubArena.getCurrentPlayer() + 1);
-                            pl.sendCustomData(p, "join", arenaName);
-                        }
-                        return;
+                if (pl.isHubServer() && pl.getConfig().getBoolean("useBungeeCord")) {
+                    String arenaName = sign.getSide(Side.FRONT).getLine(2);
+                    HubArena hubArena = pl.getAm().getHubArena(arenaName);
+                    if (hubArena.getMaxPlayer() > hubArena.getCurrentPlayer()) {
+                        hubArena.setCurrentPlayer(hubArena.getCurrentPlayer() + 1);
+                        pl.sendCustomData(p, "join", arenaName);
                     }
+                    return;
+                }
 
-                    for (final Arena ar : this.am.getArenas()) {
-                        if (ar.getSigns() != null && ar.getSigns().contains(sign)) {
-                            if (ar.getPlayers().contains(p))
-                                return;
+                for (final Arena ar : this.am.getArenas()) {
+                    if (ar.getSigns() != null && ar.getSigns().contains(sign)) {
+                        if (ar.getPlayers().contains(p))
+                            return;
 
-                            if (!ar.joinParty(p)) {
-                                JoinArena.joinArena(p, ar);
-                                e.setCancelled(true);
-                                return;
-                            }
+                        if (!ar.joinParty(p)) {
+                            JoinArena.joinArena(p, ar);
+                            e.setCancelled(true);
+                            return;
                         }
                     }
                 }
@@ -86,8 +81,7 @@ public class onPlayerInteract implements Listener {
         if (a != null) {
             if (e.getItem() != null) {
                 if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    if (e.getItem().getType() == XMaterial.LIME_DYE.parseMaterial() && e.getItem().getItemMeta().getDisplayName()
-                            .equals(ChatColor.GRAY + Language.MSG.PlayerHiderText.msg() + " \u27AF " + ChatColor.GREEN + Language.MSG.PlayerHiderHidden.msg())) {
+                    if (e.getItem().getType() == XMaterial.LIME_DYE.get()) {
                         p.sendMessage(org.bukkit.ChatColor.RED + Language.MSG.PlayerHiderHiddenText.msg());
                         for (Player players : a.getPlayersAlive()) {
                             // check if player is the same as the player who clicked the item (to avoid hiding himself)
@@ -99,8 +93,7 @@ public class onPlayerInteract implements Listener {
                         p.getInventory().setItem(7, a.getPinkDye());
                         pl.getPlayerHiderManager().getHidden().add(p.getUniqueId());
 
-                    } else if (e.getItem().getType() == XMaterial.PINK_DYE.parseMaterial() && e.getItem().getItemMeta().getDisplayName()
-                            .equals(ChatColor.GRAY + Language.MSG.PlayerHiderText.msg() + " \u27AF " + ChatColor.RED + Language.MSG.PlayerHiderVisible.msg())) {
+                    } else if (e.getItem().getType() == XMaterial.PINK_DYE.get()) {
                         p.sendMessage(ChatColor.GREEN + Language.MSG.PlayerHiderVisibleText.msg());
                         for (Player players : a.getPlayersAlive()) {
                             if (players != p)
@@ -109,18 +102,15 @@ public class onPlayerInteract implements Listener {
 
                         p.getInventory().setItem(7, a.getLimeDye());
                         pl.getPlayerHiderManager().getHidden().remove(p.getUniqueId());
-                    } else if (e.getItem().getType() == XMaterial.MAGMA_CREAM.parseMaterial() && e.getItem().getItemMeta().getDisplayName()
-                            .equals(Language.MSG.ColourRainItemName.msg())) {
-                        p.getInventory().remove(XMaterial.MAGMA_CREAM.parseMaterial());
+                    } else if (e.getItem().getType() == XMaterial.MAGMA_CREAM.get()) {
+                        p.getInventory().remove(XMaterial.MAGMA_CREAM.get());
                         for (int i = 0; i < 100; i++) {
-                            final Random rand = new Random();
                             final Location loc = a.getDanceFloorCuboid().getRandomLocation().add(0.0, 20, 0.0);
-                            final Snowball sb = (Snowball) loc.getWorld().spawnEntity(loc, EntityType.SNOWBALL);
+                            final Snowball sb = (Snowball) Objects.requireNonNull(loc.getWorld()).spawnEntity(loc, EntityType.SNOWBALL);
                             sb.setShooter(p);
                         }
-                    } else if (e.getItem().getType() == XMaterial.FEATHER.parseMaterial() && e.getItem().getItemMeta().getDisplayName()
-                            .equals(Language.MSG.LeapItemName.msg())) {
-                        p.getInventory().remove(XMaterial.FEATHER.parseMaterial());
+                    } else if (e.getItem().getType() == XMaterial.FEATHER.get()) {
+                        p.getInventory().remove(XMaterial.FEATHER.get());
                         p.setVelocity(p.getLocation().getDirection().multiply(1));
                         p.playSound(p.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1.0f, 1.0f);
                     }
@@ -128,11 +118,11 @@ public class onPlayerInteract implements Listener {
             }
         }
 
-        if (e.getItem() != null && e.getItem().getType() == XMaterial.STICK.parseMaterial() &&
+        if (e.getItem() != null && e.getItem().getType() == XMaterial.STICK.get() &&
                 (CreationZoneManager.getPlayerLocation().containsKey(p))) {
             e.setCancelled(true);
             Location loc1 = null;
-            Location loc2 = null;
+            Location loc2;
             List<Location> locations = CreationZoneManager.getPlayerLocation().get(p);
 
             if (!locations.isEmpty())
@@ -141,13 +131,13 @@ public class onPlayerInteract implements Listener {
             if (e.getClickedBlock() == null)
                 return;
 
-            if (loc1 == null && loc2 == null) {
+            if (loc1 == null) {
                 loc1 = e.getClickedBlock().getLocation();
                 locations.add(loc1);
                 CreationZoneManager.addPlayerLocation(p, locations);
                 pl.getDebug().msg(p, Language.MSG.putFirstLoc.msg(p));
                 return;
-            } else if (loc1 != null && loc2 == null) {
+            } else {
                 loc2 = e.getClickedBlock().getLocation();
                 locations.add(loc2);
                 CreationZoneManager.addPlayerLocation(p, locations);
@@ -156,7 +146,7 @@ public class onPlayerInteract implements Listener {
 
             CreationZoneManager.rmvPlayerLocation(p);
             Cuboid cu = new Cuboid(loc1, loc2);
-            e.getPlayer().getInventory().setItem(0, new ItemStack(XMaterial.AIR.parseItem()));
+            e.getPlayer().getInventory().setItem(0, new ItemStack(Objects.requireNonNull(XMaterial.AIR.parseItem())));
 
             if (CreationZoneManager.getCreationZone().containsKey(p)) {
                 a = CreationZoneManager.getCreationZone().get(p);
@@ -236,8 +226,8 @@ public class onPlayerInteract implements Listener {
                 final File fileDanceFloor = new File(pl.getDataFolder() + File.separator + "CustomDanceFloors", name + ".yml");
                 final YamlConfiguration fcDanceFloor = YamlConfiguration.loadConfiguration(fileDanceFloor);
                 List<Block> bls = new Cuboid(loc1, loc2).blockList();
-                List<Material> material = new ArrayList<Material>();
-                List<String> materialName = new ArrayList<String>();
+                List<Material> material = new ArrayList<>();
+                List<String> materialName = new ArrayList<>();
 
                 for (Block bl : bls) {
                     materialName.add(bl.getType().toString());
@@ -254,8 +244,6 @@ public class onPlayerInteract implements Listener {
                 this.pl.getDebug().msg(p, Language.MSG.CreatedCustomDanceCuboid.msg(p));
             }
 
-            loc1 = null;
-            loc2 = null;
         }
 
         if (a != null) {
@@ -264,7 +252,7 @@ public class onPlayerInteract implements Listener {
             return;
         }
 
-        if (e.getItem() != null && e.getItem().getItemMeta() != null && e.getItem().getType() == XMaterial.SLIME_BALL.parseMaterial()) {
+        if (e.getItem() != null && e.getItem().getItemMeta() != null && e.getItem().getType() == XMaterial.SLIME_BALL.get()) {
             //if(e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK)
             if (pl.getConfig().getBoolean("useBungeeCord")) {
                 pl.sendCustomData(p, "leave", a.getName());
@@ -275,7 +263,7 @@ public class onPlayerInteract implements Listener {
 
         if (e.getItem() != null) {
             ItemStack it = e.getItem();
-            if (it.getType() == XMaterial.PAPER.parseMaterial()) {
+            if (it.getType() == XMaterial.PAPER.get()) {
                 if (a.getState() == ArenaState.WATTING || a.getState() == ArenaState.CLEARED) {
                     if (p.hasPermission("BlockParty.ChoseSong")) {
                         pl.getChoseSongGUI().openChoseSongGui(p, a);

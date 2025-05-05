@@ -4,6 +4,7 @@
 
 package fr.joschma.BlockParty;
 
+import com.cryptomorin.xseries.XSound;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -11,7 +12,6 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import fr.joschma.BlockParty.Arena.Arena;
 import fr.joschma.BlockParty.Arena.InitializeArena;
-import fr.joschma.BlockParty.Arena.State.SongProvider;
 import fr.joschma.BlockParty.Gui.ArenaGui;
 import fr.joschma.BlockParty.Gui.ChoseSongGUI;
 import fr.joschma.BlockParty.Gui.JoinArenaGui;
@@ -20,7 +20,10 @@ import fr.joschma.BlockParty.Manager.*;
 import fr.joschma.BlockParty.Messages.Debugger;
 import fr.joschma.BlockParty.TabFinisher.TabCompletor;
 import fr.joschma.BlockParty.Utils.*;
+import gtdr.niobium.kostul.SoundNB;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.mcjukebox.plugin.bukkit.MCJukebox;
+import net.mcjukebox.plugin.bukkit.api.JukeboxAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,18 +32,16 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.DataOutputStream;
+import javax.xml.xpath.XPath;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -204,6 +205,7 @@ public class BPM extends JavaPlugin {
             bungee();
 
         (BPM.pl = this).saveDefaultConfig();
+        SoundNB.setPlugin(this);
         if (!new File(getDataFolder(), "Language.yml").exists()) {
             saveResource("Language.yml", false);
         }
@@ -264,8 +266,6 @@ public class BPM extends JavaPlugin {
 
         isPluginActivated();
 
-        checkSongProvider();
-
         if (getServer().getPluginManager().getPlugin("Parties") != null && getServer().getPluginManager().getPlugin("Parties").isEnabled()) {
             partiesIsEnable = true;
         }
@@ -306,27 +306,6 @@ public class BPM extends JavaPlugin {
         getServer().getMessenger().registerIncomingPluginChannel(this, "joschma:blockparty" + getConfig().getString("ServerName").toLowerCase(),
                 pluginMessageListener);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "joschma:blockparty");
-    }
-
-    private void checkSongProvider() {
-        for (Arena a : am.getArenas()) {
-            if (a.getSongProvider() == SongProvider.NoteBlock) {
-                if (!noteIsEnable) {
-                    debug.broadcastError(" *** NoteBlockAPI is not installed or not enabled. ***");
-                    debug.broadcastError("https://www.spigotmc.org/resources/noteblockapi.19287/");
-                }
-            } else if (a.getSongProvider() == SongProvider.MCJukebox) {
-                if (!MCJukeboxIsEnable) {
-                    debug.broadcastError(" *** MCJukebox is not installed or not enabled. ***");
-                    debug.broadcastError("https://www.spigotmc.org/resources/mcjukebox.16024/");
-                }
-            } else if (a.getSongProvider() == SongProvider.OpenAudioMC) {
-                if (!OpenAudioMcIsEnable) {
-                    debug.broadcastError(" *** OpenAudio is not installed or not enabled. ***");
-                    debug.broadcastError("https://www.spigotmc.org/resources/openaudiomc-proximity-voice-chat-and-music-without-mods.30691/");
-                }
-            }
-        }
     }
 
     private void isPluginActivated() {

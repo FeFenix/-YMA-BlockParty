@@ -1,6 +1,19 @@
-Hey !  
-This is the source code of the [[YMA] Block Party plugin](https://www.spigotmc.org/resources/no-longer-maintained-yma-block-party-with-music-1-13-1-20.98473/)  
-You can find the wiki [here](https://github.com/joschmaCYU/-YMA-BlockParty-Wiki)
+# BlockParty
+**Custom Minecraft minigame plugin inspired by BlockParty**  
+This is a private/internal project used exclusively by the GoFeDaKo Team.
 
-Feel free to contrubute to the code !  
-It's now a community driven project !
+## **Changes:**
+- The plugin has been optimized and unnecessary functionality has been removed
+- Added music integration through the resource pack
+- Updated for Minecraft 1.21.4
+
+## Features
+
+- Random color dancing mechanics  
+- Countdown and reaction system  
+- Custom sounds and song integration  
+- Multiple arena support  
+- Admin setup commands  
+- Player stats and leaderboard tracking
+
+The original plugin - [-YMA-BlockParty](https://github.com/joschmaCYU/-YMA-BlockParty/tree/master?tab=readme-ov-file)

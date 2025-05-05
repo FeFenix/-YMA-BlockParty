@@ -11,7 +11,6 @@ import fr.joschma.BlockParty.Arena.HubArena;
 import fr.joschma.BlockParty.Arena.JoinArena.JoinArena;
 import fr.joschma.BlockParty.Arena.JoinArena.JoinArenaCheck;
 import fr.joschma.BlockParty.Arena.State.ArenaState;
-import fr.joschma.BlockParty.Arena.State.SongProvider;
 import fr.joschma.BlockParty.Arena.State.SongSetting;
 import fr.joschma.BlockParty.BPM;
 import fr.joschma.BlockParty.Messages.Language;
@@ -321,18 +320,7 @@ public class CommandManager implements CommandExecutor {
                                         pl.getDebug().msg(p, "You have set the song setting at " + ChatColor.GOLD + "CHOOSE");
                                     }
                                 } else if (args[1].equalsIgnoreCase("songprovider")) {
-                                    if (a2.getSongProvider() == SongProvider.NoteBlock) {
-                                        a2.setSongProvider(SongProvider.MCJukebox);
-                                        pl.getDebug().msg(p, "You have set the song provider at " + ChatColor.GOLD + "MCJukebox");
-                                    } else if (a2.getSongProvider() == SongProvider.MCJukebox) {
-                                        a2.setSongProvider(SongProvider.OpenAudioMC);
-                                        pl.getDebug().msg(p, "You have set the song provider at " + ChatColor.GOLD + "OpenAudioMC");
-                                    } else if (a2.getSongProvider() == SongProvider.OpenAudioMC) {
-                                        a2.setSongProvider(SongProvider.NoteBlock);
-                                        pl.getDebug().msg(p, "You have set the song provider at " + ChatColor.GOLD + "NoteBlock");
-                                    }
-
-                                    fc.set("Settings.SongProvider", a2.getSongProvider().toString());
+                                    Bukkit.broadcastMessage("SongProvider is deleted from plugin!");
                                 } else if (args[1].equalsIgnoreCase("spectator")) {
                                     if (a2.getState() == ArenaState.WATTING) {
                                         p.setGameMode(GameMode.SPECTATOR);

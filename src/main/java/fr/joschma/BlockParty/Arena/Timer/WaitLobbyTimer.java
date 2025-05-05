@@ -43,23 +43,23 @@ public class WaitLobbyTimer {
                         if(a.isChangeTime())
                             p.getWorld().setTime(20000 + (time * 400L));
                         if (time == 5) {
-                            p.sendTitle(ChatColor.YELLOW + "\u277A", "", 10, 20, 10);
+                            p.sendTitle(ChatColor.YELLOW + "❺", "", 10, 20, 10);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 0.6f);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.6f);
                         } else if (time == 4) {
-                            p.sendTitle(ChatColor.YELLOW + "\u2779", "", 10, 20, 10);
+                            p.sendTitle(ChatColor.YELLOW + "❹", "", 10, 20, 10);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 0.7f);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.7f);
                         } else if (time == 3) {
-                            p.sendTitle(ChatColor.GOLD + "\u2778", "", 10, 20, 10);
+                            p.sendTitle(ChatColor.GOLD + "❸", "", 10, 20, 10);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 0.8f);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.8f);
                         } else if (time == 2) {
-                            p.sendTitle(ChatColor.RED + "\u2777", "", 10, 20, 10);
+                            p.sendTitle(ChatColor.RED + "❷", "", 10, 20, 10);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 0.9f);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.9f);
                         } else if (time == 1) {
-                            p.sendTitle(ChatColor.DARK_RED + "\u2776", "", 10, 20, 10);
+                            p.sendTitle(ChatColor.DARK_RED + "❶", "", 10, 20, 10);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 1, 1.0f);
                             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1.0f);
                         }

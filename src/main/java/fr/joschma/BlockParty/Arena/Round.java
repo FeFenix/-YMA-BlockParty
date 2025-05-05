@@ -54,7 +54,7 @@ public class Round {
             if (a.isGiveBlock()) {
                 for (int i = 0; i < 9; i++) {
                     if (p.getInventory().getItem(i) != null) {
-                        Material ma = p.getInventory().getItem(i).getType();
+                        Material ma = Objects.requireNonNull(p.getInventory().getItem(i)).getType();
                         if (a.getDanceFloorColourGroupActualMaterials().contains(ma) || a.getDanceFloorActualMaterial() == ma) {
                             p.getInventory().setItem(i, new ItemStack(Material.AIR));
                         }

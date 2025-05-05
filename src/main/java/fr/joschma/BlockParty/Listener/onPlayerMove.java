@@ -62,7 +62,7 @@ public class onPlayerMove implements Listener {
                         p.getWorld().spawnEntity(p.getLocation(), EntityType.LIGHTNING);
                     a.rmvAlivePlayer(p);
 
-                    String msg = ChatColor.YELLOW + e.getPlayer().getDisplayName() + ChatColor.GRAY + " \u27B2 " + Language.MSG.PlayerEliminatedMessage.msg();
+                    String msg = ChatColor.YELLOW + e.getPlayer().getDisplayName() + ChatColor.GRAY + " ➲ " + Language.MSG.PlayerEliminatedMessage.msg();
                     for (Player players : a.getPlayers()) {
                         this.pl.getDebug().msg(players, msg);
                     }
@@ -155,10 +155,10 @@ public class onPlayerMove implements Listener {
                                 public void run() {
                                     p.addPotionEffect(new PotionEffect(XPotion.SPEED.getPotionEffectType(), Integer.MAX_VALUE, 0));
                                 }
-                            }, (long) (20 * a.getDurationPowerUp() + 1));
+                            }, 20L * a.getDurationPowerUp() + 1);
                             powerUpName = Language.MSG.PowerUpSpeed.msg();
                         } else if (powerUpName.equalsIgnoreCase("Jump Boost")) {
-                            p.addPotionEffect(new PotionEffect(XPotion.JUMP.getPotionEffectType(), 20 * a.getDurationPowerUp(), a.getLevelOfPowerUp()));
+                            p.addPotionEffect(new PotionEffect(XPotion.JUMP_BOOST.getPotionEffectType(), 20 * a.getDurationPowerUp(), a.getLevelOfPowerUp()));
                             powerUpName = Language.MSG.PowerUpJump_Boost.msg();
                         } else if (powerUpName.equalsIgnoreCase("Slow Falling")) {
                             p.addPotionEffect(new PotionEffect(XPotion.SLOW_FALLING.getPotionEffectType(), 20 * a.getDurationPowerUp(), a.getLevelOfPowerUp()));
@@ -182,7 +182,7 @@ public class onPlayerMove implements Listener {
                             final Location loc = a.getDanceFloorCuboid().getRandomLocation().add(0, 2, 0);
                             p.teleport(loc);
                         } else if (powerUpName.equalsIgnoreCase("Cow")) {
-                            // summon a cow that will follow the player and explode after 5 seconds, setting the blocks around it to ma
+                            // summon a cow that will follow the player and explode after 5 seconds, setting the surrounding blocks to ma
                             final Material ma = a.getDanceFloorActualMaterial();
 
                             // summon a cow next to the player

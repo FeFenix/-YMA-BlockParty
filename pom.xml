@@ -13,62 +13,48 @@
     <description>Block Party is mini-game plugin</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <!-- Узгоджено версію Java з компілятором -->
+        <java.version>19</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>19</maven.compiler.release>
     </properties>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}-shaded</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>19</source>
+                    <target>19</target>
                 </configuration>
             </plugin>
-
-            <!--<plugin>
-                <groupId>net.md-5</groupId>
-                <artifactId>specialsource-maven-plugin</artifactId>
-                <version>1.2.2</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>remap</goal>
-                        </goals>
-                        <id>remap-obf</id>
-                        <configuration>
-                            <srgIn>org.spigotmc:minecraft-server:1.19-R0.1-SNAPSHOT:txt:maps-mojang</srgIn>
-                            <reverse>true</reverse>
-                            <remappedDependencies>org.spigotmc:spigot:1.19-R0.1-SNAPSHOT:jar:remapped-mojang</remappedDependencies>
-                            <remappedArtifactAttached>true</remappedArtifactAttached>
-                            <remappedClassifierName>remapped-obf</remappedClassifierName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>remap</goal>
-                        </goals>
-                        <id>remap-spigot</id>
-                        <configuration>
-                            <inputFile>${project.build.directory}/${project.artifactId}-${project.version}-remapped-obf.jar</inputFile>
-                            <srgIn>org.spigotmc:minecraft-server:1.19-R0.1-SNAPSHOT:csrg:maps-spigot</srgIn>
-                            <remappedDependencies>org.spigotmc:spigot:1.19-R0.1-SNAPSHOT:jar:remapped-obf</remappedDependencies>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.6.0</version>
+                <configuration>
+                    <finalName>BlockParty-1.52-shaded</finalName>
+                    <filters>
+                        <filter>
+                            <artifact>fr.mrmicky:fastboard</artifact>
+                            <excludes>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                        <filter>
+                            <artifact>com.github.cryptomorin:XSeries</artifact>
+                            <excludes>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>shade</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -78,34 +64,18 @@
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
-                                        <exclude>META-INF/*.MF</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <!-- <outputFile>C:\Users\josch\Downloads\Mc_Server\server\plugins\BlockParty.jar</outputFile> -->
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>**/*.jar</exclude>
-                    <exclude>**/*.nbs</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources/Songs</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.nbs</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
 
     <repositories>
@@ -116,10 +86,6 @@
         <repository>
             <id>minecraft-repo</id>
             <url>https://libraries.minecraft.net/</url>
-        </repository>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/oliverdunk/JukeboxAPI</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
@@ -145,6 +111,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+            <repository>
+                <id>local-repo</id>
+                <url>file://${project.basedir}/lib</url>
+            </repository>
     </repositories>
 
     <dependencies>
@@ -172,15 +142,15 @@
             <version>v2.5.3</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.craftmend.openaudiomc</groupId>
-            <artifactId>openaudiomc-api</artifactId>
-            <version>6.10.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/openaudiomc-api.jar</systemPath>
-            <type>jar</type>
-            <optional>true</optional>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.craftmend.openaudiomc</groupId>-->
+        <!--            <artifactId>openaudiomc-api</artifactId>-->
+        <!--            <version>6.10.0</version>-->
+        <!--            <scope>system</scope>-->
+        <!--            <systemPath>${project.basedir}/src/main/resources/openaudiomc-api.jar</systemPath>-->
+        <!--            <type>jar</type>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
         <!--<dependency>
             <groupId>com.github.Mindgamesnl</groupId>
             <artifactId>OpenAudioMc</artifactId>
@@ -213,7 +183,8 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>9.10.0</version>
+            <version>13.0.0</version>
         </dependency>
     </dependencies>
+
 </project>

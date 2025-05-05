@@ -27,23 +27,20 @@ public class RegenerateBlockTimer {
         a.getPl().getMusicManager().stopMusic(a);
         a.getPl().getMusicManager().startStopMusic(a);
 
-        this.taskID = scheduler.scheduleSyncRepeatingTask((Plugin) a.getPl(), (Runnable) new Runnable() {
-            @Override
-            public void run() {
-                if (RegenerateBlockTimer.this.time == 0) {
-                    a.getRoundFile().startRound(a);
-                    if (a.checkWin()) {
-                        return;
-                    }
-
-                    stopTimer();
-                } else if (RegenerateBlockTimer.this.time > 0) {
-                    for (final Player p : a.getPlayersAlive()) {
-                        ActionBar.sendActionBar(p, ChatColor.RED + "\u274c " + Language.MSG.Stop.msg(p) + " \u274c");
-                    }
-
-                    --time;
+        this.taskID = scheduler.scheduleSyncRepeatingTask(a.getPl(), () -> {
+            if (RegenerateBlockTimer.this.time == 0) {
+                a.getRoundFile().startRound(a);
+                if (a.checkWin()) {
+                    return;
                 }
+
+                stopTimer();
+            } else if (RegenerateBlockTimer.this.time > 0) {
+                for (final Player p : a.getPlayersAlive()) {
+                    ActionBar.sendActionBar(p, ChatColor.RED + "❌ " + Language.MSG.Stop.msg(p) + " ❌");
+                }
+
+                --time;
             }
         }, 0L, 20L);
     }

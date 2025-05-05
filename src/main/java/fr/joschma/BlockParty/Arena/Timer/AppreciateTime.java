@@ -73,24 +73,18 @@ public class AppreciateTime {
 
         this.time = a.getAppreciateTime();
         final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        this.taskID = scheduler.scheduleSyncRepeatingTask((Plugin) a.getPl(), (Runnable) new Runnable() {
-            @Override
-            public void run() {
-                if (AppreciateTime.this.time == 0) {
-                    a.clear();
-                    AppreciateTime.this.stopTimer();
-                } else if (AppreciateTime.this.time > 0) {
-                    AppreciateTime.this.spawnConfetti(a);
-                    Bukkit.getServer().getScheduler().runTaskLater((Plugin) a.getPl(), (Runnable) new Runnable() {
-                        @Override
-                        public void run() {
-                            if (a.isEnableFireworksOnWin())
-                                AppreciateTime.this.spawnConfetti(a);
-                        }
-                    }, 10L);
-                    final AppreciateTime this$0 = AppreciateTime.this;
-                    --this$0.time;
-                }
+        this.taskID = scheduler.scheduleSyncRepeatingTask(a.getPl(), () -> {
+            if (AppreciateTime.this.time == 0) {
+                a.clear();
+                AppreciateTime.this.stopTimer();
+            } else if (AppreciateTime.this.time > 0) {
+                AppreciateTime.this.spawnConfetti(a);
+                Bukkit.getServer().getScheduler().runTaskLater(a.getPl(), () -> {
+                    if (a.isEnableFireworksOnWin())
+                        AppreciateTime.this.spawnConfetti(a);
+                }, 10L);
+                final AppreciateTime this$0 = AppreciateTime.this;
+                --this$0.time;
             }
         }, 0L, 20L);
     }
