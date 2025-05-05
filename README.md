@@ -17,3 +17,4 @@ This is a private/internal project used exclusively by the GoFeDaKo Team.
 - Player stats and leaderboard tracking
 
 The original plugin - [-YMA-BlockParty](https://github.com/joschmaCYU/-YMA-BlockParty/tree/master?tab=readme-ov-file)
+The original WIKI - [-YMA-BlockParty-Wiki](https://github.com/joschmaCYU/-YMA-BlockParty-Wiki)
